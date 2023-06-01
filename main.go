@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	err := run("/home/paul/Pictures/Photos/2023/")
+	err := run("")
 	if err != nil {
 		fmt.Println(err)
 	}
