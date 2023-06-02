@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"io/fs"
 	copyf "main/copy"
@@ -15,11 +16,17 @@ import (
 
 var path_error = errors.New("no such file or directory")
 
+type Settings struct {
+	Src     string
+	Dest    string
+	Verbose bool
+}
+
 func main() {
-	//r, _ := decode.Read_img("/home/paul/Pictures/Photos/2023/2023.04/2023.04.30/3H2A6646.CR3")
-	//t, _ := decode.Image_date(r, ".CR3")
-	src := "/home/paul/Pictures/Photos/"
-	dest := "/home/paul/Pictures/TESTGO"
+	s := args()
+
+	//src := "/home/paul/Pictures/Photos/"
+	//dest := "/home/paul/Pictures/TESTGO"
 	/*
 		_, err := final_dir(dest, t)
 
@@ -27,7 +34,8 @@ func main() {
 			fmt.Println(err)
 		}
 	*/
-	err := run(src, dest)
+
+	err := run(s.Src, s.Dest, s.Verbose)
 
 	if err != nil {
 		fmt.Println(err)
@@ -35,7 +43,7 @@ func main() {
 
 }
 
-func run(src_path string, dest_path string) error {
+func run(src_path string, dest_path string, verb bool) error {
 	file_count := 0
 	err := filepath.Walk(src_path, func(img string, info fs.FileInfo, err error) error {
 		if err != nil {
@@ -51,6 +59,10 @@ func run(src_path string, dest_path string) error {
 		}
 		ext := filepath.Ext(img)
 		if ext != ".CR3" && ext != ".JPG" {
+			if !check_dir(dest_path + "0000") {
+				os.Mkdir("0000", 0750)
+			}
+			copyf.Copy_pictures(img, dest_path+"0000")
 			return nil
 		}
 		date, err := decode.Image_date(image, ext)
@@ -64,7 +76,11 @@ func run(src_path string, dest_path string) error {
 			return err
 		}
 		copyf.Copy_pictures(img, final_path)
-		//fmt.Println(date)
+		if verb {
+			name := copyf.Get_image_name(img)
+			fmt.Printf("%s -> %s/%s\n", img, dest_path, name)
+		}
+
 		file_count += 1
 		return nil
 	})
@@ -122,4 +138,15 @@ func check_dir(destination_path string) bool {
 	//false, no such file directory
 	_, err := os.Stat(destination_path)
 	return err == nil
+}
+
+func args() Settings {
+	s := Settings{}
+
+	flag.StringVar(&s.Src, "s", "", "source dir")
+	flag.StringVar(&s.Dest, "d", "", "destination dir")
+	flag.BoolVar(&s.Verbose, "v", false, "Display operations")
+	flag.Parse()
+	fmt.Println(s.Src, s.Dest, s.Verbose)
+	return s
 }
