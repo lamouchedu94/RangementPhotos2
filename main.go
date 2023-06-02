@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
+	copyf "main/copy"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -58,11 +59,12 @@ func run(src_path string, dest_path string) error {
 			return err
 		}
 
-		_, err = final_dir(dest_path, date)
+		final_path, err := final_dir(dest_path, date)
 		if err != nil {
 			return err
 		}
-		fmt.Println(date)
+		copyf.Copy_pictures(img, final_path)
+		//fmt.Println(date)
 		file_count += 1
 		return nil
 	})
@@ -87,14 +89,19 @@ func final_dir(dest_path string, date time.Time) (string, error) {
 
 	m_temp := int(date.Month())
 	m := strconv.Itoa(m_temp)
-	if len(m) < 10 {
+	if len(m) < 2 {
 		m = "0" + m
 	}
 	dest_path += fmt.Sprintf("/%d.%s", y, m)
 	create_dir(dest_path)
 
-	d := date.Day()
-	dest_path += fmt.Sprintf("/%d.%v.%d", y, m, d)
+	d_temp := date.Day()
+	d := strconv.Itoa(d_temp)
+	if len(d) < 2 {
+		d = "0" + d
+	}
+
+	dest_path += fmt.Sprintf("/%d.%s.%s", y, m, d)
 	create_dir(dest_path)
 
 	return dest_path, nil
