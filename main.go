@@ -34,16 +34,18 @@ func main() {
 			fmt.Println(err)
 		}
 	*/
-
-	err := run(s.Src, s.Dest, s.Verbose)
+	start := time.Now()
+	file_count, err := run(s.Src, s.Dest, s.Verbose)
 
 	if err != nil {
 		fmt.Println(err)
+		return
 	}
-
+	end := time.Now()
+	fmt.Printf("%d : Pictures in directory \nOperation successful in %v !\n", file_count, end.Sub(start))
 }
 
-func run(src_path string, dest_path string, verb bool) error {
+func run(src_path string, dest_path string, verb bool) (int, error) {
 	file_count := 0
 	err := filepath.Walk(src_path, func(img string, info fs.FileInfo, err error) error {
 		if err != nil {
@@ -78,14 +80,13 @@ func run(src_path string, dest_path string, verb bool) error {
 		copyf.Copy_pictures(img, final_path)
 		if verb {
 			name := copyf.Get_image_name(img)
-			fmt.Printf("%s -> %s/%s\n", img, dest_path, name)
+			fmt.Printf("%s -> %s/%s\n", img, final_path, name)
 		}
 
 		file_count += 1
 		return nil
 	})
-	fmt.Println(file_count, ": Photo in directory")
-	return err
+	return file_count, err
 }
 
 func final_dir(dest_path string, date time.Time) (string, error) {
