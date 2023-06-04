@@ -10,7 +10,7 @@
             "request": "launch",
             "mode": "auto",
             "program": "${fileDirname}",
-            "args": ["-s","/mnt/nfs_share/Paul/Photo/Aranger","-d","/mnt/nfs_share/Paul/Photo/", "-v"]
+            "args": ["-s","/mnt/nfs_share/Paul/Photo/Aranger","-d","/mnt/nfs_share/Paul/Photsso/", "-v"]
         }
     ]
 }
