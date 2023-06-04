@@ -25,15 +25,6 @@ type Settings struct {
 func main() {
 	s := args()
 
-	//src := "/home/paul/Pictures/Photos/"
-	//dest := "/home/paul/Pictures/TESTGO"
-	/*
-		_, err := final_dir(dest, t)
-
-		if err != nil {
-			fmt.Println(err)
-		}
-	*/
 	start := time.Now()
 	file_count, err := run(s.Src, s.Dest, s.Verbose)
 
