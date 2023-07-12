@@ -1,15 +1,29 @@
 package copyf
 
 import (
+	"errors"
 	"os"
 	"strings"
 )
 
+var AlreadyExist = errors.New("file already exist")
+
 func Copy_pictures(src_path string, dest_path string) error {
 
 	data, err := os.ReadFile(src_path)
+	if err != nil {
+		return err
+	}
 
 	img_name := Get_image_name(src_path)
+	fi, err := os.Stat(dest_path + "/" + img_name)
+	if err != nil {
+		return err
+	}
+	if fi != nil {
+		return AlreadyExist
+	}
+
 	dest_path = dest_path + "/" + img_name
 	dst, err := os.Create(dest_path)
 	if err != nil {

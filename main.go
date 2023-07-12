@@ -68,8 +68,10 @@ func run(src_path string, dest_path string, verb bool) (int, error) {
 		if err != nil {
 			return err
 		}
-		copyf.Copy_pictures(img, final_path)
-		if verb {
+		err = copyf.Copy_pictures(img, final_path)
+		if err == copyf.AlreadyExist {
+			fmt.Println(img, "already exist in destination")
+		} else if verb {
 			name := copyf.Get_image_name(img)
 			fmt.Printf("%s -> %s/%s\n", img, final_path, name)
 		}
