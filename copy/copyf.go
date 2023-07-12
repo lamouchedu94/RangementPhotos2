@@ -16,10 +16,8 @@ func Copy_pictures(src_path string, dest_path string) error {
 	}
 
 	img_name := Get_image_name(src_path)
-	fi, err := os.Stat(dest_path + "/" + img_name)
-	if err != nil {
-		return err
-	}
+	fi, _ := os.Stat(dest_path + "/" + img_name)
+
 	if fi != nil {
 		return AlreadyExist
 	}
